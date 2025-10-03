@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+    <style>
+
+      body {
+        margin: 0 8px;
+      }
+
+      .button-group {
+        margin: 5px;
+        padding: 10px;
+        font-size: 16px;
+        background-color: rgb(25, 135, 84);
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      .app-container {
+        background-color: rgb(222, 222, 222);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+    </style>
+
+
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">         
+
+
+      function App() {
+
+        const [count, setCount] = React.useState(0);
+        const clickButton = React.useRef(null);
+        const [isAuto, setIsAuto] = React.useState(false);
+
+        function handleClick() {
+          setCount(count + 1);
+        }
+
+        function reset() {
+          setCount(0);
+          
+        }
+
+        function autoClick() {
+          setIsAuto(true);
+        }
+
+        React.useEffect(() => {
+          if (!isAuto) return;
+          const interval = setInterval( () => {
+            // console.log(isAuto);
+            const buttonElm = clickButton.current;
+            if (buttonElm) buttonElm.click();
+          }, 1000);
+        }, [isAuto]);
+
+        return (
+          <div className="app-container"> 
+              <button 
+                onClick={handleClick} 
+                ref={clickButton}
+                className="button-group"
+              > 
+                Clicked {count} {count == 1 ? "time" : "times"}
+              </button>
+              
+              <button 
+                onClick={reset}
+                className="button-group"
+              >
+                Reset
+              </button>
+
+              <button 
+                onClick={autoClick}
+                className="button-group"
+              > 
+                Auto Click 
+              </button>
+
+          </div>
+        );
+      }
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>
