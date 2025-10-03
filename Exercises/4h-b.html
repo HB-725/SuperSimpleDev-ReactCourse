@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+
+
+
+     
+
+
+      function App() {
+
+        const [count, setCount] = React.useState(0);
+        const clickButton = React.useRef(null);
+
+
+          // display button
+        function ClickButton({count, setCount}) {
+
+          function HandleClick() {
+            setCount(count + 1);
+          }
+
+          return (
+            <>
+              <button 
+                onClick={HandleClick} 
+                ref={clickButton}
+              > 
+                Clicked {count} {count == 1 ? "time" : "times"}
+              </button>
+            </>
+          );
+
+        }
+
+
+        function ResetCount({setCount}) {
+
+          function Reset() {
+            setCount(0);
+            
+          }
+
+          return (
+            <>
+              <button onClick={Reset}>Reset</button>
+            </>
+          );
+        }
+
+        function AutoClick({count, setCount}) {
+
+          const [isAuto, setIsAuto] = React.useState(false);
+
+          React.useEffect(() => {
+            if (!isAuto) return;
+            const interval = setInterval( () => {
+              // console.log(clickButton);
+              const buttonElm = clickButton.current;
+              if (buttonElm) buttonElm.click();
+            }, 1000);
+          }, [isAuto, setCount]);
+
+
+
+          return (
+            <>
+              <button onClick={()=>{setIsAuto(true)}}> Auto Click </button>
+            </>
+          );
+          
+        }
+
+        return (
+          <> 
+            <ClickButton count={count} setCount={setCount}/>
+            <ResetCount setCount={setCount} />
+            <AutoClick count={count} setCount={setCount} />
+          </>
+        );
+      }
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>

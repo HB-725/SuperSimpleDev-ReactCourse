@@ -32,7 +32,6 @@
       }
 
 
-
       function ResetCount({setCount}) {
 
         function Reset() {
@@ -46,6 +45,28 @@
         );
       }
 
+      function AutoClick({count, setCount}) {
+
+        const [isAuto, setIsAuto] = React.useState(false);
+
+        React.useEffect(() => {
+          if (!isAuto) return;
+          const interval = setInterval( () => {
+            setCount(count => count + 1);
+          }, 1000);
+        }, [isAuto, setCount]);
+
+
+
+        return (
+          <>
+            <button onClick={()=>{setIsAuto(true)}}> Auto Click </button>
+          </>
+        );
+        
+      }
+
+
       function App() {
 
         const [count, setCount] = React.useState(0);
@@ -53,8 +74,8 @@
         return (
           <> 
             <ClickButton count={count} setCount={setCount} />
-            <ClickButton count={count} setCount={setCount} />
             <ResetCount setCount={setCount} />
+            <AutoClick count={count} setCount={setCount} />
           </>
         );
       }
