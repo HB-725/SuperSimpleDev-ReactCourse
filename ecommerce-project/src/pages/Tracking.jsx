@@ -1,4 +1,3 @@
-import './header.css';
 import './Tracking.css';
 
 export function OrdersPage() {
