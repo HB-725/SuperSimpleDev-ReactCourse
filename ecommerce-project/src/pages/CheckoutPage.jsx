@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import './checkout-header.css';
 import './CheckoutPage.css';
 import { formatMoney } from '../utils/money';
@@ -9,11 +9,19 @@ import dayjs from 'dayjs';
 export function CheckoutPage({ cart }) {
 
     const [deliveryOptions, setDeliveryOptions] = useState([]);
+    const [paymentSummary, setPaymentSummary] = useState(null);
+
     useEffect(() => {
         axios.get('/api/delivery-options?expand=estimatedDeliveryTime')
             .then((response) => {
                 setDeliveryOptions(response.data);
             });
+
+        axios.get('/api/payment-summary')
+            .then((response) => {
+                setPaymentSummary(response.data);
+            });
+
     }, []);
 
 
@@ -130,34 +138,39 @@ export function CheckoutPage({ cart }) {
                             Payment Summary
                         </div>
 
-                        <div className="payment-summary-row">
-                            <div>Items (3):</div>
-                            <div className="payment-summary-money">$42.75</div>
-                        </div>
+                        {paymentSummary && (
 
-                        <div className="payment-summary-row">
-                            <div>Shipping &amp; handling:</div>
-                            <div className="payment-summary-money">$4.99</div>
-                        </div>
+                            <>
+                                <div className="payment-summary-row">
+                                    <div>Items ({paymentSummary.totalItems}):</div>
+                                    <div className="payment-summary-money">{formatMoney(paymentSummary.productCostCents)}</div>
+                                </div>
 
-                        <div className="payment-summary-row subtotal-row">
-                            <div>Total before tax:</div>
-                            <div className="payment-summary-money">$47.74</div>
-                        </div>
+                                <div className="payment-summary-row">
+                                    <div>Shipping &amp; handling:</div>
+                                    <div className="payment-summary-money">{formatMoney(paymentSummary.shippingCostCents)}</div>
+                                </div>
 
-                        <div className="payment-summary-row">
-                            <div>Estimated tax (10%):</div>
-                            <div className="payment-summary-money">$4.77</div>
-                        </div>
+                                <div className="payment-summary-row subtotal-row">
+                                    <div>Total before tax:</div>
+                                    <div className="payment-summary-money">{formatMoney(paymentSummary.totalCostBeforeTaxCents)}</div>
+                                </div>
 
-                        <div className="payment-summary-row total-row">
-                            <div>Order total:</div>
-                            <div className="payment-summary-money">$52.51</div>
-                        </div>
+                                <div className="payment-summary-row">
+                                    <div>Estimated tax (10%):</div>
+                                    <div className="payment-summary-money">{formatMoney(paymentSummary.taxCents)}</div>
+                                </div>
 
-                        <button className="place-order-button button-primary">
-                            Place your order
-                        </button>
+                                <div className="payment-summary-row total-row">
+                                    <div>Order total:</div>
+                                    <div className="payment-summary-money">{formatMoney(paymentSummary.totalCostCents)}</div>
+                                </div>
+
+                                <button className="place-order-button button-primary">
+                                    Place your order
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
